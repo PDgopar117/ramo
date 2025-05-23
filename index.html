@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Una rosa animada con mensaje romántico">
+    
+    <title>Un ramo para ti</title>
+    <style>
+        /* Reset y configuración base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            height: 100vh;
+            width: 100vw;
+            background: #080f1a;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Contenedor principal con mejoras de centrado */
+        .container {
+            position: absolute;
+            left: 50%;
+            top: 40%;
+            transform: translate(-50%, -50%);
+            /* Optimización de rendimiento */
+            will-change: transform;
+        }
+
+        /* Jarrón */
+        .glass {
+            height: 400px;
+            width: 300px;
+            background: #122139;
+            border-radius: 150px 150px 0px 0px;
+            position: relative;
+            /* Activar aceleración por hardware */
+            transform: translateZ(0);
+        }
+
+        /* Borde superior del jarrón */
+        .glass::before {
+            content: "";
+            height: 20px;
+            width: 20px;
+            transform-origin: center;
+            border: 12px solid #122139;
+            border-radius: 100%;
+            position: absolute;
+            left: 128px;
+            top: -37px;
+        }
+
+        /* Base del jarrón */
+        .glass::after {
+            content: "";
+            position: absolute;
+            height: 8px;
+            width: 300px;
+            background: #a52a2a;
+            top: 100%;
+            left: 0;
+        }
+
+        /* Efecto de brillo */
+        .shine {
+            width: 13px;
+            height: 165px;
+            background: white;
+            opacity: 0.2;
+            position: absolute;
+            left: 85%;
+            top: 100px;
+            border-radius: 50px;
+            z-index: 10;
+        }
+
+        .shine::before {
+            content: "";
+            width: 13px;
+            height: 20px;
+            position: absolute;
+            background: white;
+            top: 182px;
+            border-radius: 50px;
+        }
+
+        /* Pétalos principales */
+        .petals > div {
+            position: absolute;
+            background: #d52d58;
+            width: 42px;
+            height: 60px;
+            top: 100px;
+            transition: all 0.5s ease-out;
+            /* Optimización */
+            will-change: transform;
+            backface-visibility: hidden;
+        }
+
+        /* Pétalo central */
+        .petals > div:nth-child(1) {
+            border-radius: 15px;
+            box-shadow: 0px 0px 30px rgba(245, 148, 184, 1);
+            left: 134px;
+            top: 100px;
+            background: #d52d58;
+            z-index: 6;
+        }
+
+        /* Pétalos laterales izquierdos */
+        .petals > div:nth-child(2),
+        .petals > div:nth-child(4),
+        .petals > div:nth-child(6) {
+            background: #b81b43;
+            left: 115px;
+            border-radius: 0px 25px 0px 25px;
+            transform-origin: bottom right;
+        }
+
+        /* Pétalos laterales derechos */
+        .petals > div:nth-child(3),
+        .petals > div:nth-child(5),
+        .petals > div:nth-child(7) {
+            background: #b81b43;
+            left: 150px;
+            border-radius: 25px 0px 25px 0px;
+            transform-origin: bottom left;
+        }
+
+        /* Configuración individual de pétalos con animaciones */
+        .petals > div:nth-child(2) {
+            z-index: 5;
+            background: #ab1a3f;
+            top: 109px;
+            height: 65px;
+            box-shadow: 0px 0px 30px rgba(245, 148, 184, .5);
+            animation: bloom2 3s ease-in-out forwards;
+        }
+
+        .petals > div:nth-child(3) {
+            z-index: 4;
+            background: #ab1a3f;
+            top: 109px;
+            height: 65px;
+            box-shadow: 0px 0px 30px rgba(245, 148, 184, .5);
+            animation: bloom3 3s ease-in-out forwards, glowing 2.5s ease-in-out infinite;
+        }
+
+        .petals > div:nth-child(4) {
+            z-index: 3;
+            background: #b81b43;
+            top: 106px;
+            height: 67px;
+            box-shadow: 0px 0px 30px rgba(245, 148, 184, .5);
+            animation: bloom4 3s ease-in-out forwards, glowing 2.5s ease-in-out infinite;
+        }
+
+        .petals > div:nth-child(5) {
+            z-index: 2;
+            background: #b81b43;
+            top: 106px;
+            height: 67px;
+            box-shadow: 0px 0px 30px rgba(245, 148, 184, .5);
+            animation: bloom5 3s ease-in-out forwards, glowing 2.5s ease-in-out infinite;
+        }
+
+        .petals > div:nth-child(6) {
+            z-index: 1;
+            background: #c9204b;
+            top: 100px;
+            height: 65px;
+            box-shadow: 0px 0px 30px rgba(245, 148, 184, .3);
+            animation: bloom6 3s ease-in-out forwards, glowing 2.5s ease-in-out infinite;
+        }
+
+        .petals > div:nth-child(7) {
+            z-index: 0;
+            background: #c9204b;
+            top: 100px;
+            height: 65px;
+            box-shadow: 0px 0px 30px rgba(245, 148, 184, .3);
+            animation: bloom7 3s ease-in-out forwards, glowing 2.5s ease-in-out infinite;
+        }
+
+        /* Pétalos cayendo - CORREGIDO */
+        .deadPetals > div {
+            position: absolute;
+            background: #d52d58;
+            width: 20px;
+            height: 15px;
+            top: 100px;
+            border-radius: 0px 30px 0px 30px;
+            box-shadow: 0px 0px 15px rgba(245, 148, 184, .5);
+            transition: all 0.5s ease-out;
+            opacity: 0;
+            /* Optimización */
+            will-change: transform, opacity, top;
+        }
+
+        /* Posiciones corregidas para pétalos cayendo */
+        .deadPetals > div:nth-child(1) {
+            left: 120px;
+            transform: rotate(-30deg);
+            animation: falling 20s 4s ease-in-out infinite;
+        }
+
+        .deadPetals > div:nth-child(2) {
+            left: 145px;
+            transform: rotate(45deg);
+            animation: falling 20s 8s ease-in-out infinite;
+        }
+
+        .deadPetals > div:nth-child(3) {
+            left: 170px;
+            transform: rotate(-45deg);
+            animation: falling 20s 12s ease-in-out infinite;
+        }
+
+        .deadPetals > div:nth-child(4) {
+            left: 135px;
+            transform: rotate(30deg);
+            animation: falling 20s 16s ease-in-out infinite;
+        }
+
+        /* Hojas */
+        .leaves > div:nth-last-child(1) {
+            position: absolute;
+            width: 27px;
+            height: 15px;
+            background: #338f37;
+            top: 167px;
+            left: 139px;
+            border-radius: 50px;
+        }
+
+        /* Tallo */
+        .leaves > div:nth-child(1) {
+            position: absolute;
+            width: 8px;
+            height: 195px;
+            background: #054c05;
+            top: 154px;
+            left: 150px;
+            border-radius: 0 0 50px 50px;
+        }
+
+        /* Hoja izquierda */
+        .leaves > div:nth-child(2) {
+            position: absolute;
+            width: 30px;
+            height: 50px;
+            border-radius: 5px 40px 20px 40px;
+            background: #054c05;
+            transform-origin: bottom;
+            transform: rotate(-30deg);
+            top: 206px;
+            left: 127px;
+            box-shadow: inset 5px 5px #066406;
+        }
+
+        /* Hoja derecha */
+        .leaves > div:nth-child(3) {
+            position: absolute;
+            width: 30px;
+            height: 50px;
+            border-radius: 40px 5px 40px 20px;
+            background: #054c05;
+            transform-origin: bottom;
+            transform: rotate(30deg);
+            top: 180px;
+            left: 150px;
+            box-shadow: inset -5px 5px #066406;
+        }
+
+        /* Espinas */
+        .thorns > div {
+            position: absolute;
+            width: 0;
+            height: 0;
+        }
+
+        .thorns > div:nth-child(odd) {
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+            border-left: 8px solid #054c05;
+            left: 157px;
+        }
+
+        .thorns > div:nth-child(even) {
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+            border-right: 8px solid #054c05;
+            left: 142px;
+        }
+
+        .thorns > div:nth-child(1) {
+            top: 232px;
+        }
+
+        .thorns > div:nth-child(2) {
+            top: 195px;
+        }
+
+        .thorns > div:nth-child(4) {
+            top: 262px;
+        }
+
+        /* Animaciones */
+        @keyframes bloom2 {
+            50% {
+                transform: rotate(-90deg);
+                top: 200px;
+                left: 75px;
+            }
+            100% {
+                transform: rotate(-60deg);
+                top: 307px;
+                left: 50px;
+                background: #71122a;
+                box-shadow: 0px 0px 0px rgba(245, 148, 184, 0);
+            }
+        }
+
+        @keyframes bloom3 {
+            100% {
+                transform: rotate(50deg);
+            }
+        }
+
+        @keyframes bloom4 {
+            100% {
+                transform: rotate(-25deg);
+            }
+        }
+
+        @keyframes bloom5 {
+            100% {
+                transform: rotate(25deg);
+            }
+        }
+
+        @keyframes bloom6 {
+            100% {
+                transform: rotate(-10deg);
+            }
+        }
+
+        @keyframes bloom7 {
+            100% {
+                transform: rotate(10deg);
+            }
+        }
+
+        @keyframes glowing {
+            50% {
+                background: #d7365f;
+                box-shadow: 0px 0px 40px rgba(245, 148, 184, 1);
+            }
+        }
+
+        /* Animación de caída corregida */
+        @keyframes falling {
+            0% {
+                opacity: 0;
+                top: 100px;
+            }
+            10% {
+                opacity: 1;
+            }
+            20% {
+                top: 250px;
+                background: #9d193b;
+                box-shadow: 0px 0px 10px rgba(245, 148, 184, 0.3);
+            }
+            90% {
+                opacity: 1;
+                top: 350px;
+            }
+            100% {
+                opacity: 0;
+                top: 360px;
+                transform: rotate(90deg) translateX(20px);
+            }
+        }
+
+        /* Texto romántico */
+        .texto {
+            position: fixed;
+            bottom: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: clamp(18px, 4vw, 28px);
+            text-align: center;
+            padding: 0 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        /* Accesibilidad - Reducir movimiento para usuarios sensibles */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* Responsividad básica */
+        @media (max-width: 480px) {
+            .container {
+                transform: translate(-50%, -50%) scale(0.8);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container" role="img" aria-label="Rosa animada en un jarrón">
+        <div class="glass">
+            <div class="shine"></div>
+        </div>
+        <div class="thorns">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <div class="leaves">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <div class="petals">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <div class="deadPetals">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+    <div>
+        <h1 class="texto">Mi amor por ti durará hasta que caiga el último pétalo ❤️</h1>
+    </div>
+</body>
+
+</html>
